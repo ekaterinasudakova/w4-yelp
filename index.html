@@ -68,23 +68,45 @@
 	})
 
 	function displayArticles(article){
-		const title = article.headline.main;
+		const title = businesses.name;
+		console.log("the name of this business is: ", title);
+
+		let location = businesses.location.display_address;
+		console.log("the location of this business is: ", location);
+
+		let rating = businesses.rating;
+		console.log("the rating for this business is: ", rating);
+
+		let price = businesses.price;
+		console.log("the price range for this business is: ", price);
+
 		let thumbnail = 'http://support.yumpu.com/en/wp-content/themes/qaengine/img/default-thumbnail.jpg';
-		if( article.multimedia && article.multimedia.length) {
-			thumbnail = "https://static01.nyt.com/" + article.multimedia[0].url;}
+		if( businesses.image_url && businesses.image_url.length) {
+			thumbnail = businesses.image_url;}
+		console.log("the thumbnail for this business is: ", thumbnail);
 		
-		const url = article.web_url;
+		const url = businesses.url;
+		console.log("the url of this business is: ", url);
 
 		const liEl = document.createElement('li');
 		const linkEl = document.createElement('a');
 		const imgEl = document.createElement('img');
+		const div = document.createElement('div');
 
-		const pEl = document.createTextNode(title);
+		const pTitleEl = document.createTextNode(title);
+		const pLocationEl = document.createTextNode(location);
+		const pRatingEl = document.createTextNode(rating);
+		const pPriceEl = document.createTextNode(price);
+
 		linkEl.href = url;
 		imgEl.src = thumbnail; 
 
 		liEl.appendChild(linkEl);
-		linkEl.appendChild(pEl);
+
+		linkEl.appendChild(pTitleEl);
+		linkEl.appendChild(pLocationEl);
+		linkEl.appendChild(pRatingEl);
+		linkEl.appendChild(pPriceEl);
 		linkEl.appendChild(imgEl);
 
 		document.body.appendChild(liEl);
