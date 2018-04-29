@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>yelp api</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" href="dist/css/main.css">
+		
+	</head>
+	<body>
+		<form>
+			<label>Business Type:
+				<input type="text" name="term" id="term" placeholder="type" />
+			</label>
+			<label>Business Location:
+				<input type="text" name="location" id="location" placeholder="location" />
+			</label>
+			<br/>
+			<label>Price Level:
+				<label>
+					<input type="checkbox" name="price" value="1" />
+				</label> $
+				<label>
+				<input type="checkbox" name="price" value="2"; />
+				</label> $$
+			</label>
+
+			<a href="#" id="search">Search</a>
+
+			<hr/>
+
+			<ul id="results"></ul>
+		</form>
+		
+
+		<script src="dist/js/main.js"></script>
+
+	</body>
+</html>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+
+(function(){
+
+	const API_KEY = "2-eO6_aZS3e3d9Q35TFJ8OAyiFXsSS9X3jqYz_A2fMGZjwnckl6kDHcqJRuF-T261k7jC6qWLnEUIvi5-l-qw7JeHANXoNtnF3Y0VC02R-KJywyBqm5vI6TISGPiWnYx";
+	const clientID = "69Va0F6exzvxb4JXXkc_bg";
+
+	const termEl = document.getElementById('term');
+	const locationEl = document.getElementById('location');
+	const searchBtn = document.getElementById('search');
+	const resultsEl = document.getElementById('results');
+
+
+
+	searchBtn.addEventListener('click', function(e){
+		e.preventDefault();
+		const queryTerm = termEl.value;
+		const location = locationEl.value;
+		console.log(`The business type you entered is: `, queryTerm);
+		console.log(`The location you entered is: `, location);
+
+		searchYelp(location, queryTerm);
+
+	})
+
+	function displayArticles(article){
+		const title = article.headline.main;
+		let thumbnail = 'http://support.yumpu.com/en/wp-content/themes/qaengine/img/default-thumbnail.jpg';
+		if( article.multimedia && article.multimedia.length) {
+			thumbnail = "https://static01.nyt.com/" + article.multimedia[0].url;}
+		
+		const url = article.web_url;
+
+		const liEl = document.createElement('li');
+		const linkEl = document.createElement('a');
+		const imgEl = document.createElement('img');
+
+		const pEl = document.createTextNode(title);
+		linkEl.href = url;
+		imgEl.src = thumbnail; 
+
+		liEl.appendChild(linkEl);
+		linkEl.appendChild(pEl);
+		linkEl.appendChild(imgEl);
+
+		document.body.appendChild(liEl);
+	}
+
+	function displayArticles(articleArray){
+
+		resultsEl.innerHTML = '';
+
+		if (articleArray && articleArray.length && articleArray.length > 0) {
+
+			articleArray.forEach(function(article){
+				console.log('article', article);
+				displayArticle(article);
+			})
+		} else {
+			console.warn("No articles found!")
+			//also show message in the page
+		}
+	}
+
+
+	function searchYelp(location, queryTerm){
+		axios.get('https://circuslabs.net/proxies/yelp-fusion-proxy/', {
+  			params: {
+  				'_ep': '/businesses/search',
+  				'term': queryTerm,
+  				'location': location
+  			},
+
+  			headers: {
+  				'Authorization': 'Bearer ' + API_KEY
+  			}
+  		})
+		
+		.then(function (response) {
+			console.log('response:', response.data, response)
+
+			displayArticles(response.data, respose.docs);
+		})
+  		} 
+
+})()
+</script>
