@@ -77,11 +77,12 @@
 	function getCheckedValues(checkedItems){
 		console.log('checkedItems', checkedItems)
 		let allChecked = '';
-		for (var i= checkedItems.length -1; i>= 0l i--){
+		for (var i= checkedItems.length -1; i>= 0; i--){
 			var checkedItem = checkedItems[i].value
 			console.log('checkedItem', checkedItem)
-			allChecked = allChecked + ',' +checkedItem
+			allChecked = allChecked + ',' + checkedItem
 		}
+		console.log('allChecked', allChecked)
 		// [...checkedItems]
 		return allChecked
 	}
