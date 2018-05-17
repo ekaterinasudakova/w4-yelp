@@ -27,6 +27,12 @@
 				<label>
 					<input type="checkbox" name="price" value="2"; />
 				</label> $$
+				<label>
+					<input type="checkbox" name="price" value="3"; />
+				</label> $$$
+				<label>
+						<input type="checkbox" name="price" value="4"; />
+				</label> $$$$
 			</label>
 			<br/>=
 			<a href="#" id="search">Search</a>
@@ -60,12 +66,25 @@
 		e.preventDefault();
 		const queryTerm = termEl.value;
 		const location = locationEl.value;
+		const prices = getCheckedValues(document.querySelectorAll('[name=price]:checked'));
 		console.log(`The business type you entered is: `, queryTerm);
 		console.log(`The location you entered is: `, location);
 
 		searchYelp(location, queryTerm);
 
 	})
+
+	function getCheckedValues(checkedItems){
+		console.log('checkedItems', checkedItems)
+		let allChecked = '';
+		for (var i= checkedItems.length -1; i>= 0l i--){
+			var checkedItem = checkedItems[i].value
+			console.log('checkedItem', checkedItem)
+			allChecked = allChecked + ',' +checkedItem
+		}
+		// [...checkedItems]
+		return allChecked
+	}
 
 	function displayArticles(article){
 		const title = businesses.name;
@@ -98,15 +117,12 @@
 		const pRatingEl = document.createTextNode(rating);
 		const pPriceEl = document.createTextNode(price);
 
+		const pEl = document.createTextNode(title);
 		linkEl.href = url;
 		imgEl.src = thumbnail; 
 
 		liEl.appendChild(linkEl);
-
-		linkEl.appendChild(pTitleEl);
-		linkEl.appendChild(pLocationEl);
-		linkEl.appendChild(pRatingEl);
-		linkEl.appendChild(pPriceEl);
+		linkEl.appendChild(pEl);
 		linkEl.appendChild(imgEl);
 
 		document.body.appendChild(liEl);
@@ -114,25 +130,17 @@
 
 	function displayArticles(articleArray){
 
-		resultsEl.innerHTML = '';
+		if (articleArray.length){
+			resultsEl.innerHTML = '';
 
-		if (articleArray && articleArray.length && articleArray.length > 0) {
-
-			articleArray.forEach(function(article){
-				console.log('article', article);
-				displayArticle(article);
-			})
-		} else {
-			console.warn("No articles found!")
-			//also show message in the page
+			//now add the new results
 		}
 	}
 
 
 	function searchYelp(location, queryTerm){
-		axios.get('https://circuslabs.net/proxies/yelp-fusion-proxy/', {
+		axios.get('https://api.yelp.com/v3/businesses/search', {
   			params: {
-  				'_ep': '/businesses/search',
   				'term': queryTerm,
   				'location': location
   			},
