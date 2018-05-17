@@ -76,14 +76,23 @@
 
 	function getCheckedValues(checkedItems){
 		console.log('checkedItems', checkedItems)
-		let allChecked = '';
-		for (var i= checkedItems.length -1; i>= 0; i--){
-			var checkedItem = checkedItems[i].value
-			console.log('checkedItem', checkedItem)
-			allChecked = allChecked + ',' + checkedItem
-		}
+		//OPTION 1: the old-school JS way
+		// let allChecked = '';
+		// for (var i= checkedItems.length -1; i>= 0; i--){
+		// 	var checkedItem = checkedItems[i].value
+		// 	console.log('checkedItem', checkedItem)
+		// 	allChecked = allChecked + ',' + checkedItem
+		// }
+
+		//OPTION 2: the ES6 way
+
+		//turns node list into array[...]
+		const checkedValues = [...checkedItems].map(function(checkedItem){
+			return checkedItem.value;
+		})
+		const allChecked = checkedValues.join(',');
 		console.log('allChecked', allChecked)
-		// [...checkedItems]
+		//
 		return allChecked
 	}
 
