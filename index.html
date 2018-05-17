@@ -53,7 +53,6 @@
 (function(){
 
 	const API_KEY = "2-eO6_aZS3e3d9Q35TFJ8OAyiFXsSS9X3jqYz_A2fMGZjwnckl6kDHcqJRuF-T261k7jC6qWLnEUIvi5-l-qw7JeHANXoNtnF3Y0VC02R-KJywyBqm5vI6TISGPiWnYx";
-	const clientID = "69Va0F6exzvxb4JXXkc_bg";
 
 	const termEl = document.getElementById('term');
 	const locationEl = document.getElementById('location');
@@ -70,7 +69,11 @@
 		console.log(`The business type you entered is: `, queryTerm);
 		console.log(`The location you entered is: `, location);
 
-		searchYelp(location, queryTerm);
+		searchYelp({
+			'location': location,
+			'term': term,
+			'price': prices
+		});
 
 	})
 
@@ -97,45 +100,7 @@
 	}
 
 	function displayArticles(article){
-		const title = businesses.name;
-		console.log("the name of this business is: ", title);
-
-		let location = businesses.location.display_address;
-		console.log("the location of this business is: ", location);
-
-		let rating = businesses.rating;
-		console.log("the rating for this business is: ", rating);
-
-		let price = businesses.price;
-		console.log("the price range for this business is: ", price);
-
-		let thumbnail = 'http://support.yumpu.com/en/wp-content/themes/qaengine/img/default-thumbnail.jpg';
-		if( businesses.image_url && businesses.image_url.length) {
-			thumbnail = businesses.image_url;}
-		console.log("the thumbnail for this business is: ", thumbnail);
 		
-		const url = businesses.url;
-		console.log("the url of this business is: ", url);
-
-		const liEl = document.createElement('li');
-		const linkEl = document.createElement('a');
-		const imgEl = document.createElement('img');
-		const div = document.createElement('div');
-
-		const pTitleEl = document.createTextNode(title);
-		const pLocationEl = document.createTextNode(location);
-		const pRatingEl = document.createTextNode(rating);
-		const pPriceEl = document.createTextNode(price);
-
-		const pEl = document.createTextNode(title);
-		linkEl.href = url;
-		imgEl.src = thumbnail; 
-
-		liEl.appendChild(linkEl);
-		linkEl.appendChild(pEl);
-		linkEl.appendChild(imgEl);
-
-		document.body.appendChild(liEl);
 	}
 
 	function displayArticles(articleArray){
@@ -147,24 +112,29 @@
 		}
 	}
 
+	function searchYelp(options){
 
-	function searchYelp(location, queryTerm){
-		axios.get('https://api.yelp.com/v3/businesses/search', {
-  			params: {
-  				'term': queryTerm,
-  				'location': location
-  			},
+		const searchParams = Object.assign({}, options, {
+			'_ep': '/businesses/search',
+		})
+		console.log('searchParams', searchParams)
 
+		axios.get('https://api.yelp.com/v3', {
+  			params: searchParams,
   			headers: {
   				'Authorization': 'Bearer ' + API_KEY
   			}
   		})
 		
 		.then(function (response) {
-			console.log('response:', response.data, response)
+			console.log('here is the response data from key:', response.data, response)
 
-			displayArticles(response.data, respose.docs);
+			displayArticles(response.data.businesses);
 		})
+
+		return{
+			search: searchYelp
+		}
   		} 
 
 })()
