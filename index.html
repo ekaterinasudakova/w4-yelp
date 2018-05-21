@@ -14,10 +14,10 @@
 
 		<form>
 			<label>Business Type:
-				<input type="text" name="term" id="term" placeholder="type" />
+				<input type="text" name="term" id="term" placeholder="type" value="cats" />
 			</label>
 			<label>Business Location:
-				<input type="text" name="location" id="location" placeholder="location" />
+				<input type="text" name="location" id="location" placeholder="location" value="Atlanta, GA" />
 			</label>
 			<br/>
 			<label>Price Level:
@@ -50,7 +50,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript">
 
-(function(){
+var Yelp = (function(){
 
 	const API_KEY = "2-eO6_aZS3e3d9Q35TFJ8OAyiFXsSS9X3jqYz_A2fMGZjwnckl6kDHcqJRuF-T261k7jC6qWLnEUIvi5-l-qw7JeHANXoNtnF3Y0VC02R-KJywyBqm5vI6TISGPiWnYx";
 
@@ -71,7 +71,7 @@
 
 		searchYelp({
 			'location': location,
-			'term': term,
+			'term': queryTerm,
 			'price': prices
 		});
 
@@ -99,17 +99,58 @@
 		return allChecked
 	}
 
-	function displayArticles(article){
+	function displayArticle(article){
+		console.log("THIS", article)
+		const title = article.name;
+		// pick any kind of default fallback image
+		let thumbnail = article.image_url;
+		const url = article.url;
+
+		const liEl = document.createElement('li');
+		const linkEl = document.createElement('a');
+		const imgEl = document.createElement('img');
+
+		const pOneEl = document.createElement('p');
+		const pTwoEl = document.createElement('p');
+		const pThreeEl = document.createElement('p');
+
 		
+
+		const pEl = document.createTextNode(title);
+		//url
+		linkEl.href = url;
+		//image
+		imgEl.src = thumbnail;
+		//address
+		pOneEl.innerHTML = article.location.address1 + "," + "<br/>" + article.location.address2 + "," + "<br/>" + article.location.address3;
+		//money
+		pTwoEl.innerHTML = article.price;
+		//rating
+		pThreeEl.innerHTML = article.rating;
+
+		liEl.appendChild(linkEl);
+		linkEl.appendChild(pEl);
+		liEl.appendChild(imgEl);
+		liEl.appendChild(pOneEl);
+		liEl.appendChild(pTwoEl);
+		liEl.appendChild(pThreeEl);
+
+		resultsEl.appendChild(liEl);
 	}
 
-	function displayArticles(articleArray){
-
-		if (articleArray.length){
+		function displayArticles(articleArray) {
+		console.log("HeyO");
+		console.log(articleArray.length);
+		if (articleArray.length) {
 			resultsEl.innerHTML = '';
-
-			//now add the new results
-		}
+			for (var i = 0; i <= articleArray.length - 1; i++) {
+				var tempArrayElement = articleArray[i];			
+				displayArticle(tempArrayElement);
+			}
+			// now add the new results	
+			console.log("Here I am")
+			// send it over to google
+		}	
 	}
 
 	function searchYelp(options){
@@ -119,7 +160,7 @@
 		})
 		console.log('searchParams', searchParams)
 
-		axios.get('https://api.yelp.com/v3', {
+		axios.get('https://circuslabs.net/proxies/yelp-fusion-proxy/', {
   			params: searchParams,
   			headers: {
   				'Authorization': 'Bearer ' + API_KEY
@@ -130,12 +171,12 @@
 			console.log('here is the response data from key:', response.data, response)
 
 			displayArticles(response.data.businesses);
-		})
+		})	
+	}
 
 		return{
 			search: searchYelp
-		}
-  		} 
+		} 
 
 })()
 </script>
